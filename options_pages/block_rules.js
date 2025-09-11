@@ -89,7 +89,7 @@ async function start() {
         // set bucket icon position
         var index = $(this).attr('index');
         var tableRowHeight = $('.table_row').height();
-        var offsetTop = 34; // with the bucket in position: relative, we need to know pad for heading row
+        var offsetTop = 40; // with the bucket in position: relative, we need to know pad for heading row
         var newTop = offsetTop + index * tableRowHeight;
         $('.operations').animate(
           {
@@ -143,8 +143,8 @@ async function start() {
 
   function showNewEmptyRule() {
     if ($('.new_row:not(.template)').length > 0) {
-      $('.new_rule_operations').css('top', $('.new_row:not(.template)').position().top + 'px');
-      $('.new_rule_operations').css('left', $('.new_row:not(.template)').position().left + 'px');
+      $('.new_rule_operations').css('top', $('.new_row:not(.template)').position().top + 6 + 'px');
+      $('.new_rule_operations').css('left', '-8px');
       return;
     }
 
@@ -153,8 +153,8 @@ async function start() {
     var newRow = $('.new_row.template').clone().removeClass('template');
     $('.table').append(newRow);
 
-    $('.new_rule_operations').css('top', newRow.position().top + 'px');
-    $('.new_rule_operations').css('left', newRow.position().left + 'px');
+    $('.new_rule_operations').css('top', newRow.position().top + 6 + 'px');
+    $('.new_rule_operations').css('left', '-8px');
 
     newRow.hide();
     newRow.fadeIn();
