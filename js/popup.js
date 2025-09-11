@@ -36,27 +36,21 @@ async function start() {
   function start() {
     setLoaderVisible(true);
     const urlVars = getUrlVars();
-    if (urlVars.url === undefined) {
-      chrome.tabs.query(
-        {
-          active: true,
-          lastFocusedWindow: true,
-        },
-        function (tabs) {
-          let currentTabURL = tabs[0].url;
-          currentTabID = tabs[0].id;
-          $('input', '#cookieSearchCondition').val(currentTabURL);
-          document.title = document.title + '-' + currentTabURL;
-          doSearch(false);
-        },
-      );
-    } else {
-      var url = decodeURI(urlVars.url);
-      currentTabID = parseInt(decodeURI(urlVars.id));
-      isTabIncognito = decodeURI(urlVars.incognito) === 'true';
+    if (urlVars.url) {
+      const url = decodeURIComponent(urlVars.url);
+      currentTabID = parseInt(decodeURIComponent(urlVars.id));
+      isTabIncognito = decodeURIComponent(urlVars.incognito) === 'true';
       $('input', '#cookieSearchCondition').val(url);
       document.title = document.title + '-' + url;
       doSearch(true);
+    } else {
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        const currentTabURL = tabs[0].url;
+        currentTabID = tabs[0].id;
+        $('input', '#cookieSearchCondition').val(currentTabURL);
+        document.title = document.title + '-' + currentTabURL;
+        doSearch(false);
+      });
     }
   }
 
@@ -548,7 +542,6 @@ async function start() {
       var name = $('.name', cookie).val();
       var domain = $('.domain', cookie).val();
       var path = $('.path', cookie).val();
-      var secure = $('.secure', cookie).prop('checked');
       var storeId = $('.storeId', cookie).val();
       var okFunction = function () {
         var url = buildUrl(domain, path, getUrlOfCookies());
@@ -617,17 +610,11 @@ async function start() {
         ok_callback();
       });
 
-    if (cancel_callback !== undefined) {
-      $('#alert_cancel').show();
-      $('#alert_cancel')
-        .unbind()
-        .click(function () {
-          $('#alert_wrapper').hide('fade');
-          cancel_callback();
-        });
-    } else {
-      $('#alert_cancel').hide();
-    }
+    $('#alert_cancel')
+      .unbind()
+      .click(function () {
+        $('#alert_wrapper').hide('fade');
+      });
     $('#alert_title_p').empty().text(title);
     $('#alert_wrapper').show('fade');
   }
@@ -640,7 +627,7 @@ async function start() {
     $('.domain', cookieForm).val(getHost(getUrlOfCookies()));
     $('.hostOnly', cookieForm).prop('checked', false);
     $('.path', cookieForm).val('/');
-    $('.secure', cookieForm).prop('checked', false);
+    $('.secure', cookieForm).prop('checked', true);
     $('.httpOnly', cookieForm).prop('checked', false);
     $('.session', cookieForm).prop('checked', false);
 
@@ -805,11 +792,20 @@ async function start() {
           // This is an existing cookie, not a new one
           $('#cookiesList').accordion('option', 'active', parseInt(index));
         }
-        return undefined;
+        return;
       } else {
         $('.expiration', form).removeClass('error');
       }
     }
+
+    if (sameSite === 'no_restriction' && !secure) {
+      $('#error-message').text(_getMessage('Error_No_Restriction'));
+      $('#error-message').show();
+      return;
+    } else {
+      $('#error-message').hide();
+    }
+
     newCookie.secure = secure;
     newCookie.httpOnly = httpOnly;
     newCookie.sameSite = sameSite;

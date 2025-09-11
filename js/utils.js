@@ -1,7 +1,12 @@
 import { deleteCookie } from '/js/cookie_helpers.js';
 
 export function getHost(url) {
-  return url.match(/:\/\/(.[^:/]+)/)[1].replace('www.', '');
+  try {
+    const { hostname } = new URL(url);
+    return hostname.replace('www.', '');
+  } catch (e) {
+    return null;
+  }
 }
 
 export function addBlockRule(data, rule) {
@@ -45,11 +50,11 @@ export function addBlockRule(data, rule) {
     filterURL.domain = rule.domain;
   }
   chrome.cookies.getAll({}, function (cookieL) {
-    for (var x = 0; x < cookieL.length; x++) {
-      var cCookie = cookieL[x];
+    for (let x = 0; x < cookieL.length; x++) {
+      const cCookie = cookieL[x];
       if (filterMatchesCookie(filterURL, cCookie.name, cCookie.domain, cCookie.value)) {
-        var cUrl = cCookie.secure ? 'https://' : 'http://' + cCookie.domain + cCookie.path;
-        deleteCookie(cUrl, cCookie.name, cCookie.storeId, cCookie);
+        const cUrl = (cCookie.secure ? 'https://' : 'http://') + cCookie.domain + cCookie.path;
+        deleteCookie(cUrl, cCookie.name, cCookie.storeId);
       }
     }
   });
@@ -93,15 +98,15 @@ export function _getMessage(string, args) {
 }
 
 export function filterMatchesCookie(rule, name, domain, value) {
-  var ruleDomainReg = new RegExp(rule.domain);
-  var ruleNameReg = new RegExp(rule.name);
-  var ruleValueReg = new RegExp(rule.value);
+  const ruleDomainReg = new RegExp(rule.domain);
   if (rule.domain !== undefined && domain.match(ruleDomainReg) === null) {
     return false;
   }
+  const ruleNameReg = new RegExp(rule.name);
   if (rule.name !== undefined && name.match(ruleNameReg) === null) {
     return false;
   }
+  const ruleValueReg = new RegExp(rule.value);
   if (rule.value !== undefined && value.match(ruleValueReg) === null) {
     return false;
   }

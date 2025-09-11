@@ -17,6 +17,7 @@ async function start() {
   let forceHideOperations = false;
 
   function setEvents() {
+    //todo: fix this
     $('.cmd_delete')
       .unbind()
       .click(function () {

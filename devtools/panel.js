@@ -109,6 +109,7 @@ async function start() {
       $sameSite.append($('<option/>').attr('value', 'no_restriction').attr('i18n', 'SameSite_None'));
       $sameSite.append($('<option/>').attr('value', 'lax').attr('i18n', 'SameSite_Lax'));
       $sameSite.append($('<option/>').attr('value', 'strict').attr('i18n', 'SameSite_Strict'));
+      //todo: add SameSite "unspecified"
       $sameSite.val(currentC.sameSite);
       $row.append($('<td/>').append($sameSite));
 

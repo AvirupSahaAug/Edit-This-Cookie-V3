@@ -457,3 +457,9 @@ body {
   color: #ff0000 !important;
   font-weight: bold;
 }
+
+#error-message {
+  color: #ff0000;
+  margin: 10px;
+  display: none;
+}

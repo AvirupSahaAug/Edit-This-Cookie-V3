@@ -1,16 +1,18 @@
 import { isChristmasPeriod, storage } from './common-utils.js';
 import { deleteCookie, cookieForCreationFromFullCookie, compareCookies } from '/js/cookie_helpers.js';
 import { startData } from './data.js';
-import { filterMatchesCookie } from './utils.js'
+import { filterMatchesCookie } from './utils.js';
 
 async function start() {
-  const { data, preferences } = await startData(function () {
+  let showContextMenu;
+  const { data, preferences } = await startData(function ({ preferences }) {
     if (showContextMenu !== preferences.showContextMenu) {
       showContextMenu = preferences.showContextMenu;
-      setContextMenu(showContextMenu);
+      toggleContextMenusBtn(showContextMenu);
     }
     setChristmasIcon();
   });
+
   function issueRefresh(port) {
     port.postMessage({
       action: 'refresh',
@@ -37,25 +39,9 @@ async function start() {
     });
   }
 
-  function setContextMenu(show) {
-    function showPopup(info, tab) {
-      const tabUrl = encodeURIComponent(tab.url);
-      const tabID = encodeURIComponent(tab.id);
-      const tabIncognito = encodeURIComponent(tab.incognito);
-      const urlToOpen = chrome.runtime.getURL('popup.html') + `?url=${tabUrl}&id=${tabID}&incognito=${tabIncognito}`;
-
-      chrome.tabs.query({ windowId: chrome.windows.WINDOW_ID_CURRENT }, (tabList) => {
-        for (const cTab of tabList) {
-          if (cTab.url.startsWith(urlToOpen)) {
-            chrome.tabs.update(cTab.id, { active: true });
-            return;
-          }
-        }
-        chrome.tabs.create({ url: urlToOpen });
-      });
-    }
+  function toggleContextMenusBtn() {
     chrome.contextMenus.removeAll(() => {
-      if (show) {
+      if (showContextMenu) {
         chrome.contextMenus.create({
           id: 'editThisCookieMenu',
           title: 'EditThisCookie',
@@ -63,12 +49,30 @@ async function start() {
         });
       }
     });
-    chrome.contextMenus.onClicked.addListener((info, tab) => {
-      if (info.menuItemId === 'editThisCookieMenu') {
-        showPopup(info, tab);
+  }
+
+  function showPopup(info, tab) {
+    const tabUrl = encodeURIComponent(tab.url);
+    const tabID = encodeURIComponent(tab.id);
+    const tabIncognito = encodeURIComponent(tab.incognito);
+    const urlToOpen = chrome.runtime.getURL('popup.html') + `?url=${tabUrl}&id=${tabID}&incognito=${tabIncognito}`;
+
+    chrome.tabs.query({ windowId: chrome.windows.WINDOW_ID_CURRENT }, (tabList) => {
+      for (const cTab of tabList) {
+        if (cTab.url.startsWith(urlToOpen)) {
+          chrome.tabs.update(cTab.id, { active: true });
+          return;
+        }
       }
+      chrome.tabs.create({ url: urlToOpen });
     });
   }
+
+  chrome.contextMenus.onClicked.addListener((info, tab) => {
+    if (info.menuItemId === 'editThisCookieMenu') {
+      showPopup(info, tab);
+    }
+  });
 
   function setChristmasIcon() {
     if (isChristmasPeriod() && preferences.showChristmasIcon) {
@@ -82,7 +86,7 @@ async function start() {
     if (port.name !== 'devtools-page') {
       return;
     }
-    const devToolsListener = function (message, sender, sendResponse) {
+    const devToolsListener = function (message) {
       const action = message.action;
       if (action === 'getall') {
         getAll(port, message);
@@ -94,15 +98,12 @@ async function start() {
         issueRefresh(port);
       }
     };
-    // add the listener
     port.onMessage.addListener(devToolsListener);
 
     port.onDisconnect.addListener(function () {
       port.onMessage.removeListener(devToolsListener);
     });
   });
-
-  var showContextMenu = undefined;
 
   setChristmasIcon();
   setInterval(setChristmasIcon, 60 * 60 * 1000);
@@ -117,11 +118,13 @@ async function start() {
   if (oldVersion !== currentVersion) {
     if (oldVersion === undefined) {
       //Is firstrun
-      chrome.tabs.create({ url: 'http://www.editthiscookie.com/start/' });
+      chrome.tabs.create({ url: 'https://editcookie.com/#start' });
     }
   }
 
-  setContextMenu(preferences.showContextMenu);
+  chrome.runtime.onInstalled.addListener(() => {
+    toggleContextMenusBtn(showContextMenu);
+  });
 
   chrome.cookies.onChanged.addListener(function (changeInfo) {
     var removed = changeInfo.removed;
@@ -161,7 +164,7 @@ async function start() {
       for (var i = 0; i < data.filters.length; i++) {
         var currentFilter = data.filters[i];
         if (filterMatchesCookie(currentFilter, name, domain, value)) {
-          chrome.tabs.query({ active: true }, function (tabs) {
+          chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             var url = tabs[0].url;
             var toRemove = {};
             toRemove.url = url;

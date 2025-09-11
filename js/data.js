@@ -197,7 +197,7 @@ export async function startData(updateCallback) {
         }
       }
       if (updateCallback) {
-        updateCallback();
+        updateCallback({ data, preferences });
       }
     }
   });

@@ -89,7 +89,6 @@
         <div id="cookieFilter" class="ui-accordion ui-widget ui-accordion-icons">
           <h3
             class="phpbb3_opbwb_u ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons ui-state-focus"
-            id="ui-accordion-cookiesList-header-4"
           >
             <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span>
             <a href="#" i18n="newFilter"></a>
@@ -98,22 +97,22 @@
             <div class="cookie-table" style="margin: 5px 0px 5px 0px; font-size: 0.89em">
               <div class="cookie-row">
                 <div>
-                  <input type="checkbox" class="filterDomain" name="domain" class="filterCheckbox" checked />
-                  <span> <label for="domain" class="" i18n="Flag_CookieWithDomain"></label>:</span>
+                  <input id="input-domain" type="checkbox" class="filterDomain" name="domain" class="filterCheckbox" checked />
+                  <span> <label for="input-domain" class="" i18n="Flag_CookieWithDomain"></label>:</span>
                 </div>
                 <span class="filteredBy" id="filterByDomain"></span>
               </div>
               <div class="cookie-row">
                 <div>
-                  <input type="checkbox" class="filterName" name="name" class="filterCheckbox" checked />
-                  <span> <label for="name" class="" i18n="Flag_CookieWithName"></label>:</span>
+                  <input id="input-name" type="checkbox" class="filterName" name="name" class="filterCheckbox" checked />
+                  <span> <label for="input-name" class="" i18n="Flag_CookieWithName"></label>:</span>
                 </div>
                 <span class="filteredBy" id="filterByName"></span>
               </div>
               <div class="cookie-row">
                 <div>
-                  <input type="checkbox" class="filterValue" name="value" class="filterCheckbox" />
-                  <span> <label for="value" class="" i18n="Flag_CookieWithValue"></label>:</span>
+                  <input id="input-value" type="checkbox" class="filterValue" name="value" class="filterCheckbox" />
+                  <span> <label for="input-value" class="" i18n="Flag_CookieWithValue"></label>:</span>
                 </div>
                 <span class="filteredBy" id="filterByValue"></span>
               </div>
@@ -185,7 +184,6 @@
       <div id="newCookie" class="ui-accordion ui-widget ui-accordion-icons">
         <h3
           class="phpbb3_opbwb_u ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons ui-state-focus"
-          id="ui-accordion-cookiesList-header-4"
         >
           <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span>
           <a href="#" i18n="addNew"></a>
@@ -229,13 +227,13 @@
               <input id="httpOnly-checkbox-new" class="httpOnly checkbox" type="checkbox" />
             </div>
           </div>
+          <div id="error-message"></div>
         </div>
       </div>
 
       <div id="pasteCookie" class="ui-accordion ui-widget ui-accordion-icons">
         <h3
           class="phpbb3_opbwb_u ui-accordion-header ui-helper-reset ui-state-default ui-accordion-header-active ui-state-active ui-corner-top ui-accordion-icons ui-state-focus"
-          id="ui-accordion-cookiesList-header-4"
         >
           <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span>
           <a href="#" i18n="Paste_Cookies"></a>
@@ -252,7 +250,7 @@
 
       <div id="submitDiv">
         <i id="submitButton" class="fa-solid fa-check" i18n_title="Alert_submitAll"></i>
-        <a id="helpButton" i18n="help" href="http://www.editthiscookie.com/start/" target="_blank"> </a>
+        <a id="helpButton" i18n="help" href="https://editcookie.com/#start" target="_blank"> </a>
       </div>
     </div>
   </body>

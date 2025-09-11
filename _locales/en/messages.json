@@ -419,5 +419,8 @@
   },
   "editThis_SameSite_Strict": {
     "message": "Strict"
+  },
+  "editThis_Error_No_Restriction": {
+    "message": "To use \"SameSite=No Restriction\", you must also set the cookie as Secure."
   }
 }

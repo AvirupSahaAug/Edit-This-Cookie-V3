@@ -6,10 +6,10 @@ export function setPageCooserEvents() {
     if ($(this).hasClass('selected')) return;
     var id = $(this).attr('id');
     if (id == 'getting_started') {
-      openExtPage('http://www.editthiscookie.com/start/');
+      openExtPage('https://editcookie.com/#start');
       return;
     } else if (id == 'help') {
-      openExtPage('http://www.editthiscookie.com/faq/');
+      openExtPage('https://editcookie.com/#faq');
       return;
     }
     await storage.set('option_panel', panel);
