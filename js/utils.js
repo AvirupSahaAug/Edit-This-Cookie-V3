@@ -141,7 +141,27 @@ export function copyToClipboard(text) {
 
   $('body').scrollTop(scrollsave);
 }
+export function downloadJson(text, currenturl) {
+  if (text === undefined) return;
+  // const obj = JSON.parse(text)
+  const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  currenturl = currenturl.replace('https://', '');
+  currenturl = currenturl.replace(/(\/|\?).*/, '');
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = currenturl + '_cookies.json';
+  link.style.display = 'none';
 
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+
+
+}
 export function setLoaderVisible(visible) {
   if (visible) {
     $('#loader-container').show();

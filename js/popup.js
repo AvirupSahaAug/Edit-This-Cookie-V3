@@ -4,7 +4,7 @@ import '/lib/uniform/jquery.uniform.js';
 
 import { startData } from '/js/data.js';
 import { buildUrl, deleteAll, deleteCookie, Filter, cookieForCreationFromFullCookie, cookiesToStringGenerator } from '/js/cookie_helpers.js';
-import { getHost, addBlockRule, switchReadOnlyRule, _getMessage, filterMatchesCookie, getUrlVars, copyToClipboard, setLoaderVisible } from '/js/utils.js';
+import { getHost, addBlockRule, switchReadOnlyRule, _getMessage, filterMatchesCookie, getUrlVars, copyToClipboard, setLoaderVisible, downloadJson } from '/js/utils.js';
 import { customI18n } from '/lib/custom_i18n.js';
 import { localizePage } from '../lib/i18n_translator.js';
 
@@ -298,7 +298,7 @@ async function start() {
     error.text('For format reference export cookies in JSON');
     error.html(
       error.html() +
-        "<br> Also check&nbsp;<a href='http://developer.chrome.com/extensions/cookies.html#type-Cookie' target='_blank'>Developer Chrome Cookie</a><br>Error:",
+      "<br> Also check&nbsp;<a href='http://developer.chrome.com/extensions/cookies.html#type-Cookie' target='_blank'>Developer Chrome Cookie</a><br>Error:",
     );
 
     try {
@@ -312,12 +312,12 @@ async function start() {
         } catch (e) {
           error.html(
             error.html() +
-              '<br>' +
-              $('<div/>')
-                .text('Cookie number ' + i)
-                .html() +
-              '<br>' +
-              $('<div/>').text(e.message).html(),
+            '<br>' +
+            $('<div/>')
+              .text('Cookie number ' + i)
+              .html() +
+            '<br>' +
+            $('<div/>').text(e.message).html(),
           );
           console.error(e.message);
           error.fadeIn();
@@ -472,7 +472,12 @@ async function start() {
           $(this).animate({ backgroundColor: '#EDEDED' }, 500);
         });
       });
-
+    $('#downloadJsonButton')
+      .unbind()
+      .click(function () {
+        var currentUrl = getUrlOfCookies();
+        downloadJson(cookiesToString.get(cookieList), currentUrl);
+      });
     $('#pasteButton')
       .unbind()
       .click(function () {

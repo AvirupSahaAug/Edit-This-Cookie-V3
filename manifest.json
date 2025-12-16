@@ -22,8 +22,17 @@
     "type": "module"
   },
   "options_page": "options_main_page.html",
-  "permissions": ["tabs", "cookies", "contextMenus", "unlimitedStorage", "storage", "clipboardWrite"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": [
+    "tabs",
+    "cookies",
+    "contextMenus",
+    "unlimitedStorage",
+    "storage",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "minimum_chrome_version": "88",
   "manifest_version": 3
 }
