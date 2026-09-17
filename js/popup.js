@@ -298,7 +298,7 @@ async function start() {
     error.text('For format reference export cookies in JSON');
     error.html(
       error.html() +
-      "<br> Also check&nbsp;<a href='http://developer.chrome.com/extensions/cookies.html#type-Cookie' target='_blank'>Developer Chrome Cookie</a><br>Error:",
+        "<br> Also check&nbsp;<a href='http://developer.chrome.com/extensions/cookies.html#type-Cookie' target='_blank'>Developer Chrome Cookie</a><br>Error:",
     );
 
     try {
@@ -312,12 +312,12 @@ async function start() {
         } catch (e) {
           error.html(
             error.html() +
-            '<br>' +
-            $('<div/>')
-              .text('Cookie number ' + i)
-              .html() +
-            '<br>' +
-            $('<div/>').text(e.message).html(),
+              '<br>' +
+              $('<div/>')
+                .text('Cookie number ' + i)
+                .html() +
+              '<br>' +
+              $('<div/>').text(e.message).html(),
           );
           console.error(e.message);
           error.fadeIn();

@@ -158,9 +158,6 @@ export function downloadJson(text, currenturl) {
 
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-
-
-
 }
 export function setLoaderVisible(visible) {
   if (visible) {
