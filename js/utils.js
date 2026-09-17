@@ -141,16 +141,40 @@ export function copyToClipboard(text) {
 
   $('body').scrollTop(scrollsave);
 }
-export function downloadJson(text, currenturl) {
+const cookieExportFileTypes = {
+  json: { extension: 'json', mimeType: 'application/json;charset=utf-8' },
+  netscape: { extension: 'txt', mimeType: 'text/plain;charset=utf-8' },
+  semicolonPairs: { extension: 'txt', mimeType: 'text/plain;charset=utf-8' },
+  lpw: { extension: 'txt', mimeType: 'text/plain;charset=utf-8' },
+};
+
+function getCookieExportFileName(currentUrl, extension) {
+  let hostname = '';
+  try {
+    hostname = new URL(currentUrl).hostname;
+  } catch (e) {
+    hostname = String(currentUrl || '')
+      .replace(/^[a-z][a-z\d+.-]*:\/\//i, '')
+      .split(/[/?#]/)[0];
+  }
+
+  hostname = hostname
+    .replace(/^\.+/, '')
+    .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_')
+    .trim();
+
+  return hostname ? `${hostname}_cookies.${extension}` : `cookies.${extension}`;
+}
+
+export function downloadCookies(text, currentUrl, exportFormat) {
   if (text === undefined) return;
-  // const obj = JSON.parse(text)
-  const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+
+  const fileType = cookieExportFileTypes[exportFormat] || cookieExportFileTypes.json;
+  const blob = new Blob([text], { type: fileType.mimeType });
   const url = URL.createObjectURL(blob);
-  currenturl = currenturl.replace('https://', '');
-  currenturl = currenturl.replace(/(\/|\?).*/, '');
   const link = document.createElement('a');
   link.href = url;
-  link.download = currenturl + '_cookies.json';
+  link.download = getCookieExportFileName(currentUrl, fileType.extension);
   link.style.display = 'none';
 
   document.body.appendChild(link);
